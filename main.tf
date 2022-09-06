@@ -12,6 +12,7 @@ resource "azurerm_container_registry" "example" {
 }
 
 # query the existence of the ACR resource using 'external' data source
+# TODO: put this into a module
 data "external" "query_acr" {
   program = ["zsh", "${path.module}/query.sh"]
 

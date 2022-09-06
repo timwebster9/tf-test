@@ -4,14 +4,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.21.1"
     }
-    azapi = {
-      source = "Azure/azapi"
-      version = "0.5.0"
-    }
-    null = {
-      source = "hashicorp/null"
-      version = "3.1.1"
-    }
   }
   backend "azurerm" {
     resource_group_name = "mgmt-rg"

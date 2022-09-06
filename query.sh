@@ -3,18 +3,16 @@
 # Exit if any of the intermediate steps fail
 #set -e
 
-# Extract "foo" and "baz" arguments from the input into
-# FOO and BAZ shell variables.
+# Extract arguments from the input into shell variables.
 # jq will ensure that the values are properly quoted
 # and escaped for consumption by the shell.
-#eval "$(jq -r '@sh "FOO=\(.foo) BAZ=\(.baz)"')"
+eval "$(jq -r '@sh "RESOURCE_ID=\(.resource_id)"')"
 
-# Placeholder for whatever data-fetching logic your script implements
-az rest --method get --uri '/subscriptions/2ca65474-3b7b-40f2-b242-0d2fba4bde6e/resourceGroups/example-rg/providers/Microsoft.ContainerRegistry/registries/asfkhsafkasdfsda?api-version=2022-02-01-preview'
-#SUCCESS=$?
-#echo $SUCCESS
+# store the result of the query in a variable so it doesn't get added to stdout,
+# or else it will be included in the JSON output for the data source
+RESULT=$(az rest --method get --uri $RESOURCE_ID)
 
-if [ $SUCCESS -eq 0 ]; then
+if [ $? -eq 0 ]; then
   query_success=1;
 else
   query_success=0;
@@ -23,4 +21,6 @@ fi
 # Safely produce a JSON object containing the result value.
 # jq will ensure that the value is properly quoted
 # and escaped to produce a valid JSON string.
+
+# TODO: ensure no other output is included (is there a way to 'clear' stdout?)
 jq -n --arg query_success "$query_success" '{"query_success":$query_success}'

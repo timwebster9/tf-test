@@ -11,9 +11,14 @@ resource "azurerm_container_registry" "example" {
   admin_enabled       = false
 }
 
-# query the existence of the ACR resource
+# query the existence of the ACR resource using 'external' data source
 data "external" "query_acr" {
   program = ["zsh", "${path.module}/query.sh"]
+
+  query = {
+    # could obviously just grab the resource ID of the ACR above using Terraform resource notation, but this is how we will need to do it with policy
+    resource_id = "/subscriptions/2ca65474-3b7b-40f2-b242-0d2fba4bde6e/resourceGroups/example-rg/providers/Microsoft.ContainerRegistry/registries/asfkhsafkasdfsda?api-version=2022-02-01-preview"
+  }
 }
 
 # if the query above worked, execute this data source
